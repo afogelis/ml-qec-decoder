@@ -39,7 +39,7 @@ def compare(
     *,
     distances: list[int],
     error_rates: list[float],
-    ml_decoders: tuple[str, ...] = ("rf", "xgb", "mlp"),
+    ml_decoders: tuple[str, ...] = ("rf", "xgb", "mlp", "cnn"),
     baseline: str = "mwpm",
     shots: int = 5_000,
     seed: int = 2026,
@@ -79,6 +79,50 @@ def regime_table(result: BenchmarkResult, *, baseline: str = "mwpm") -> list[Reg
             )
         )
     return rows
+
+
+def accuracy_vs_distance(
+    result: BenchmarkResult, *, p: float
+) -> dict[str, list[tuple[int, float]]]:
+    """Group logical error rate by decoder and distance at a fixed error rate.
+
+    Returns ``{decoder: [(distance, logical_error_rate), ...]}`` sorted by
+    distance, the data needed to ask how each decoder *scales* with code size.
+    """
+    by_decoder: dict[str, list[tuple[int, float]]] = {}
+    for record in result.records:
+        if abs(record.p - p) <= 1e-12:
+            by_decoder.setdefault(record.decoder, []).append(
+                (record.distance, record.logical_error_rate)
+            )
+    for points in by_decoder.values():
+        points.sort()
+    return by_decoder
+
+
+def plot_decoder_scaling(result: BenchmarkResult, *, p: float, ax: Axes | None = None) -> Axes:
+    """Plot logical error rate versus code distance for every decoder.
+
+    The geometry-aware CNN is expected to track the classical MWPM baseline more
+    closely than the tabular models as the distance (and thus the syndrome
+    dimension) grows.
+    """
+    if ax is None:
+        _, ax = plt.subplots(figsize=(7, 5))
+
+    for name, points in sorted(accuracy_vs_distance(result, p=p).items()):
+        distances = [d for d, _ in points]
+        lers = [ler for _, ler in points]
+        style = {"marker": "s", "linewidth": 2.5} if name == "cnn" else {"marker": "o"}
+        ax.plot(distances, lers, label=name, **style)
+
+    ax.set_yscale("log")
+    ax.set_xlabel("Code distance d")
+    ax.set_ylabel("Logical error rate")
+    ax.set_title(f"Decoder accuracy vs code distance (p = {p})")
+    ax.legend()
+    ax.grid(True, which="both", alpha=0.3)
+    return ax
 
 
 def plot_ml_vs_baseline(rows: list[RegimeRow], *, ax: Axes | None = None) -> Axes:

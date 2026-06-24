@@ -6,9 +6,9 @@ from surfacecode.circuits import build_surface_code_circuit
 from surfacecode.sampling import sample_syndromes
 from surfacecode.types import ExperimentConfig
 
-from mldecoder.models import MlpDecoder, RandomForestDecoder, XGBoostDecoder
+from mldecoder.models import CnnDecoder, MlpDecoder, RandomForestDecoder, XGBoostDecoder
 
-MODELS = [RandomForestDecoder, XGBoostDecoder, MlpDecoder]
+MODELS = [RandomForestDecoder, XGBoostDecoder, MlpDecoder, CnnDecoder]
 
 
 def _circuit_and_eval(distance=3, rounds=3, p=0.02, shots=400, seed=11):
@@ -45,6 +45,19 @@ def test_decoder_learns_something_useful(model_cls):
 def test_decoders_register_into_decbench():
     from decbench.registry import available_decoders
 
-    import mldecoder  # noqa: F401  (import registers rf/xgb/mlp)
+    import mldecoder  # noqa: F401  (import registers rf/xgb/mlp/cnn)
 
-    assert {"rf", "xgb", "mlp"}.issubset(set(available_decoders()))
+    assert {"rf", "xgb", "mlp", "cnn"}.issubset(set(available_decoders()))
+
+
+def test_cnn_builds_a_lattice_image_from_detector_coordinates():
+    # The CNN must recover a 2D+time grid whose cell count matches the detectors.
+    circuit, _ = _circuit_and_eval(distance=3, rounds=3)
+    decoder = CnnDecoder(train_shots=200, train_seed=1, epochs=2)
+    decoder._build_geometry(circuit)
+    time_steps, height, width = decoder._grid
+    assert time_steps >= 1 and height >= 1 and width >= 1
+    # Every detector must map to a valid cell within the grid.
+    assert decoder._times.max() < time_steps
+    assert decoder._rows.max() < height
+    assert decoder._cols.max() < width
