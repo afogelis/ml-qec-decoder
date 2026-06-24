@@ -11,7 +11,7 @@ against MWPM, union-find and belief propagation is apples-to-apples.
 The short answer: **no, not at this data budget.** That is the result, and it is worth showing
 clearly rather than cherry-picking the one regime where ML looks good.
 
-This is repo 4 of a seven-part [QEC research portfolio](https://github.com/afogelis/qec-portfolio).
+This is repo 4 of a ten-part [QEC research portfolio](https://github.com/afogelis/qec-portfolio).
 
 ## Results at a glance
 
