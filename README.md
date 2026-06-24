@@ -1,15 +1,15 @@
 # ML QEC Decoder: when do learned decoders fail against MWPM?
 
 A controlled **negative study**. Off-the-shelf machine-learning decoders are a popular idea, so this
-repo asks the honest question directly: trained on a realistic data budget, do learned decoders --
+repo asks the question directly: trained on a realistic data budget, do learned decoders --
 tabular *and* a geometry-aware convolutional model -- actually keep up with minimum-weight perfect
 matching as the surface code grows? Each model learns to predict the logical observable flip from a
 syndrome and plugs into the
 [`decoder-benchmark`](https://github.com/afogelis/decoder-benchmark) framework, so the comparison
 against MWPM, union-find and belief propagation is apples-to-apples.
 
-The short answer: **no, not at this data budget.** That is the result, and it is worth showing
-clearly rather than cherry-picking the one regime where ML looks good.
+The short answer: **no, not at this data budget.** The regimes where learned decoders are and are
+not competitive are reported below.
 
 This is repo 4 of a ten-part [QEC research portfolio](https://github.com/afogelis/qec-portfolio).
 
@@ -17,7 +17,7 @@ This is repo 4 of a ten-part [QEC research portfolio](https://github.com/afogeli
 
 ![Logical error rate versus code distance for MWPM and four ML decoders.](docs/cnn_scaling.png)
 
-*The headline negative result. As the code distance grows from 3 to 7 at a fixed below-threshold physical error rate (p = 0.006), MWPM (green) suppresses the logical error rate, while every learned decoder -- including the geometry-aware CNN -- diverges upward. The CNN's lattice inductive bias buys only a marginal edge over the tabular models and does not prevent the collapse.*
+*Negative result. As the code distance grows from 3 to 7 at a fixed below-threshold physical error rate (p = 0.006), MWPM (green) suppresses the logical error rate, while every learned decoder -- including the geometry-aware CNN -- diverges upward. The CNN's lattice inductive bias gives only a marginal edge over the tabular models and does not prevent the divergence.*
 
 ![Logical error rate of MWPM versus the best machine-learning decoder, across code distance and physical error rate.](docs/ml_vs_mwpm.png)
 
@@ -33,15 +33,15 @@ This is repo 4 of a ten-part [QEC research portfolio](https://github.com/afogeli
 | `cnn` | PyTorch | **Geometry-aware syndrome-grid CNN**: scatters detectors back onto their `(t, y, x)` lattice cells and applies small `Conv2d` kernels, giving the same translation-equivariant inductive bias that makes CNNs work on images. |
 
 All four subclass a common `MlDecoder` base that samples training data from the same Stim circuit
-the classical decoders see, so comparisons are apples-to-apples. The `cnn` is the most interesting
-baseline because it is the model with the *right* inductive bias for a 2D code; the study tests
-whether that bias is enough to overcome the data-scaling problem (it is not, here).
+the classical decoders see, so comparisons are like-for-like. The `cnn` is the model with the
+lattice inductive bias suited to a 2D code; the study tests whether that bias is enough to overcome
+the data-scaling problem (it is not, here).
 
-## What this demonstrates
+## Scope
 
-- **Applied ML:** framing decoding as supervised classification across tree, fully-connected and convolutional models, with early stopping and a fair train/eval split; recovering detector geometry from a Stim circuit to build the CNN's lattice tensor.
+- **Applied ML:** framing decoding as supervised classification across tree, fully-connected and convolutional models, with early stopping and a held-out train/eval split; recovering detector geometry from a Stim circuit to build the CNN's lattice tensor.
 - **Integration:** every ML model implements the same `Decoder` protocol as the classical decoders and registers into the shared benchmark.
-- **Research judgement (the point of this repo):** designing and reporting a *negative result* honestly -- showing where ML decoders fail and explaining why, rather than overclaiming a win.
+- **Negative result:** designing and reporting a negative result -- showing where ML decoders fail and explaining why.
 
 ## Research questions and findings
 
@@ -65,8 +65,8 @@ picture:
   correlated or non-graphlike noise) or where training data is abundant relative to distance --
   neither of which holds in this controlled comparison.
 
-The takeaway is not "ML beats matching." It is a calibrated, reproducible demonstration of *when a
-learned decoder is the wrong tool*, which is the more useful thing to know.
+These results identify *when a learned decoder is the wrong tool* under the conditions tested,
+rather than showing that ML beats matching.
 
 ## Install
 
@@ -88,7 +88,7 @@ pip install -e . --no-deps
 ```bash
 pytest
 python examples/ml_vs_classical.py     # writes outputs/{ml_comparison.json,ml_vs_mwpm.png}
-python examples/cnn_scaling.py          # writes docs/cnn_scaling.png (the headline figure)
+python examples/cnn_scaling.py          # writes docs/cnn_scaling.png
 ```
 
 ```bash
@@ -116,7 +116,7 @@ print(format_accuracy_tier(build_leaderboard(result)))
 - `src/mldecoder/{base,dataset,analysis,cli}.py`
 - `tests/` — small-budget training tests on the real stack, including the CNN lattice builder
 - `examples/ml_vs_classical.py` — regime analysis vs MWPM
-- `examples/cnn_scaling.py` — logical-error-vs-distance scaling (the headline negative result)
+- `examples/cnn_scaling.py` — logical-error-vs-distance scaling
 
 ## License
 
