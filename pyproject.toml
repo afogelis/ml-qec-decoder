@@ -31,7 +31,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=7.4", "pytest-cov>=4.1", "jupyter>=1.0", "nbformat>=5.9"]
+dev = ["pytest>=7.4", "pytest-cov>=4.1", "jupyter>=1.0", "nbformat>=5.9", "ruff>=0.6"]
 
 [project.scripts]
 mldecoder = "mldecoder.cli:main"
@@ -45,3 +45,11 @@ pythonpath = ["src"]
 
 [tool.coverage.run]
 source = ["mldecoder"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+ignore = ["E501"]

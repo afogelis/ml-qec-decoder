@@ -16,7 +16,9 @@ def register_ml_decoders(*, train_shots: int = 50_000, train_seed: int = 1234) -
     default settings. Call this to trade training cost against accuracy, e.g.
     a small ``train_shots`` for quick experiments or CI.
     """
-    register_decoder("rf", lambda: RandomForestDecoder(train_shots=train_shots, train_seed=train_seed))
+    register_decoder(
+        "rf", lambda: RandomForestDecoder(train_shots=train_shots, train_seed=train_seed)
+    )
     register_decoder("xgb", lambda: XGBoostDecoder(train_shots=train_shots, train_seed=train_seed))
     register_decoder("mlp", lambda: MlpDecoder(train_shots=train_shots, train_seed=train_seed))
 

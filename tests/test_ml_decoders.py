@@ -43,7 +43,8 @@ def test_decoder_learns_something_useful(model_cls):
 
 
 def test_decoders_register_into_decbench():
-    import mldecoder  # noqa: F401  (import registers rf/xgb/mlp)
     from decbench.registry import available_decoders
+
+    import mldecoder  # noqa: F401  (import registers rf/xgb/mlp)
 
     assert {"rf", "xgb", "mlp"}.issubset(set(available_decoders()))

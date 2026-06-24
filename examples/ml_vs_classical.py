@@ -35,8 +35,10 @@ def main() -> None:
     rows = regime_table(result)
     for row in rows:
         verdict = "ML WINS " if row.ml_wins else "mwpm wins"
-        print(f"d={row.distance} p={row.p:<7} {verdict} mwpm={row.mwpm_ler:.4e} "
-              f"best_ml={row.best_ml_decoder}:{row.best_ml_ler:.4e}")
+        print(
+            f"d={row.distance} p={row.p:<7} {verdict} mwpm={row.mwpm_ler:.4e} "
+            f"best_ml={row.best_ml_decoder}:{row.best_ml_ler:.4e}"
+        )
 
     with open("outputs/ml_comparison.json", "w", encoding="utf-8") as handle:
         json.dump(json.loads(result.model_dump_json()), handle, indent=2)

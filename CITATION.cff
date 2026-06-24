@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+title: "Machine-Learning QEC Decoders"
+abstract: "Machine-learning surface-code decoders (random forest, XGBoost, neural network) compared against classical decoders."
+type: software
+authors:
+  - family-names: "Fogelis"
+    given-names: "Andrew"
+version: "0.1.0"
+date-released: "2026-06-23"
+license: MIT
+repository-code: "https://github.com/afogelis/ml-qec-decoder"
+keywords:
+  - quantum-error-correction
+  - machine-learning
+  - decoder
+  - neural-network
+  - xgboost
