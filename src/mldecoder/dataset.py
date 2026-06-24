@@ -1,7 +1,7 @@
 """Generate supervised training data from a surface-code circuit.
 
 An ML decoder is trained as a classifier mapping a syndrome (the detection
-events of one shot) to the logical observable flip. We generate labelled pairs
+events of one shot) to the logical observable flip. We generate labeled pairs
 by sampling the same Stim circuit the classical decoders see, so every decoder
 is trained and evaluated on the identical noise process.
 """

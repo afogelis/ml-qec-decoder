@@ -136,7 +136,7 @@ class CnnDecoder(MlDecoder):
 
         in_channels = self._grid[0] if self._grid else 1
         net = _CnnNet(in_channels, dataset.num_labels).to(self.device)
-        optimiser = torch.optim.Adam(net.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.Adam(net.parameters(), lr=self.learning_rate)
         loss_fn = nn.BCEWithLogitsLoss()
 
         best_val = float("inf")
@@ -148,10 +148,10 @@ class CnnDecoder(MlDecoder):
             for batch_images, batch_labels in train_loader:
                 batch_images = batch_images.to(self.device)
                 batch_labels = batch_labels.to(self.device)
-                optimiser.zero_grad()
+                optimizer.zero_grad()
                 loss = loss_fn(net(batch_images), batch_labels)
                 loss.backward()
-                optimiser.step()
+                optimizer.step()
 
             net.eval()
             with torch.no_grad():

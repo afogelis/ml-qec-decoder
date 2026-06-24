@@ -1,4 +1,4 @@
-"""Analyse when ML decoders beat classical matching and when they fail.
+"""Analyze when ML decoders beat classical matching and when they fail.
 
 The research questions this module answers:
 

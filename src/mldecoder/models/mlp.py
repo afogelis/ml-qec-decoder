@@ -1,7 +1,7 @@
 """Neural-network decoder (PyTorch multilayer perceptron).
 
 A small fully-connected network maps the binary syndrome vector to per-observable
-flip probabilities. Training uses binary cross-entropy with an Adam optimiser and
+flip probabilities. Training uses binary cross-entropy with an Adam optimizer and
 early stopping on a held-out validation split. The architecture is deliberately
 modest: surface-code syndromes are low-dimensional, and the goal is a fair
 comparison against tree models and matching, not a state-of-the-art decoder.
@@ -76,7 +76,7 @@ class MlpDecoder(MlDecoder):
         val_labels = labels[val_idx].to(self.device)
 
         net = _MlpNet(dataset.num_features, dataset.num_labels, self.hidden).to(self.device)
-        optimiser = torch.optim.Adam(net.parameters(), lr=self.learning_rate)
+        optimizer = torch.optim.Adam(net.parameters(), lr=self.learning_rate)
         loss_fn = nn.BCEWithLogitsLoss()
 
         best_val = float("inf")
@@ -88,10 +88,10 @@ class MlpDecoder(MlDecoder):
             for batch_features, batch_labels in train_loader:
                 batch_features = batch_features.to(self.device)
                 batch_labels = batch_labels.to(self.device)
-                optimiser.zero_grad()
+                optimizer.zero_grad()
                 loss = loss_fn(net(batch_features), batch_labels)
                 loss.backward()
-                optimiser.step()
+                optimizer.step()
 
             net.eval()
             with torch.no_grad():
