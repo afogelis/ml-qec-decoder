@@ -13,7 +13,7 @@ htmlcov/
 venv/
 .ipynb_checkpoints/
 outputs/
-models/
+/models/
 *.pt
 *.joblib
 *.stim
