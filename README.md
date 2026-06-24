@@ -6,7 +6,13 @@ observable flip directly from a syndrome, and plugs into the
 compared head-to-head with classical decoders (MWPM, union-find, belief propagation) on accuracy,
 runtime and memory.
 
-This is repo 4 of a seven-part [QEC research portfolio](../README.md).
+This is repo 4 of a seven-part [QEC research portfolio](https://github.com/afogelis/qec-portfolio).
+
+## Results at a glance
+
+![Logical error rate of MWPM versus the best machine-learning decoder, across code distance and physical error rate.](docs/ml_vs_mwpm.png)
+
+*MWPM versus the best ML decoder per regime. The learned decoders approach MWPM at d=3 and low p, then fall behind at d=5 as the syndrome space grows.*
 
 ## Models
 
